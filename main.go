@@ -1,26 +1,29 @@
 package main
 
 import (
+	"goplanesserver/lobby"
 	"log"
 	"net/http"
 )
 
+const port = ":8080"
+
 func main() {
 
-	// start hub
-	hub := newHub()
-	go hub.run()
+	// start lobby
+	l := lobby.NewLobby()
+	go l.Run()
 
 	// serve client connection url
-	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		serveWs(hub, w, r)
+	http.HandleFunc("/join", func(w http.ResponseWriter, r *http.Request) {
+		l.LobbyHandler(w, r)
 	})
 
-	// start and listen server until error
-	err := http.ListenAndServe(":8080", nil)
+	log.Printf("Listening on port %s", port)
+	err := http.ListenAndServe(port, nil)
 
 	// server exit
 	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
+		log.Fatal("Server failure: ", err)
 	}
 }
