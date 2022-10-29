@@ -3,7 +3,7 @@ package lobby
 import (
 	"github.com/gorilla/websocket"
 	"goplanesserver/game"
-	"goplanesserver/player"
+	"goplanesserver/players"
 	"log"
 	"net/http"
 )
@@ -74,7 +74,7 @@ func (l *Lobby) Update(id int, msg []byte) {
 }
 
 func (l *Lobby) CreatePlayer(id int, conn *websocket.Conn) game.Player {
-	p := player.NewPlayer(id, l, conn)
+	p := players.NewPlayer(id, l, conn)
 	l.JoinLobby(p)
 	p.Run()
 	return p
