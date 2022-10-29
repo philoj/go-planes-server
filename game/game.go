@@ -18,6 +18,6 @@ type Lobby interface {
 	JoinLobby(p Player)
 	LeaveLobby(p Player)
 	Update(id int, msg []byte)
-	CreatePlayer(conn *websocket.Conn) Player
-	LobbyHandler(w http.ResponseWriter, r *http.Request)
+	CreatePlayer(id int, conn *websocket.Conn) Player
+	LobbyHandler(id int, w http.ResponseWriter, r *http.Request)
 }

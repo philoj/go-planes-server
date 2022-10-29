@@ -41,6 +41,7 @@ func (l *Lobby) Run() {
 	for {
 		select {
 		case p := <-l.join:
+			log.Printf("player %d join", p.Id())
 			l.players[p.Id()] = p
 		case client := <-l.leave:
 			if _, ok := l.players[client.Id()]; ok {
@@ -72,8 +73,8 @@ func (l *Lobby) Update(id int, msg []byte) {
 	l.msg <- SocketPayload{id, msg}
 }
 
-func (l *Lobby) CreatePlayer(conn *websocket.Conn) game.Player {
-	p := player.NewPlayer(l, conn)
+func (l *Lobby) CreatePlayer(id int, conn *websocket.Conn) game.Player {
+	p := player.NewPlayer(id, l, conn)
 	l.JoinLobby(p)
 	p.Run()
 	return p
@@ -89,12 +90,12 @@ var u = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
-// JoinLobby handles websocket requests from the peer.
-func (l *Lobby) LobbyHandler(w http.ResponseWriter, r *http.Request) {
+// LobbyHandler handles websocket requests from the peer.
+func (l *Lobby) LobbyHandler(id int, w http.ResponseWriter, r *http.Request) {
 	conn, err := u.Upgrade(w, r, nil)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
-	player.NewPlayer(l, conn)
+	l.CreatePlayer(id, conn)
 }

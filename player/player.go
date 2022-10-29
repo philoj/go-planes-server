@@ -65,16 +65,15 @@ func (p *Player) readPump() {
 		//message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
 		//log.Println("Incoming: ", message)
 		id := extractId(msg)
-		if p.id == 0 {
-			log.Println("player has 0 id?")
-			//if p.lobby.PlayerExists(id) {
-			//	p.setId(id)
-			//	log.Println("Added player:", p.id)
-			//} else {
-			//	log.Println("Rejecting duplicate connection", id)
-			//	break
-			//}
-		}
+		//if p.id == 0 {
+		//	log.Println("player has 0 id?")
+		//	p.setId(id)
+		//	log.Println("Added player:", p.id)
+		//	if p.lobby.PlayerExists(id) {
+		//		log.Println("Rejecting duplicate connection", id)
+		//		break
+		//	}
+		//}
 		p.lobby.Update(id, msg)
 	}
 }
@@ -161,6 +160,6 @@ func (p *Player) Update(msg []byte) error {
 	return nil
 }
 
-func NewPlayer(l game.Lobby, conn *websocket.Conn) game.Player {
-	return &Player{lobby: l, conn: conn, msg: make(chan []byte, 256)}
+func NewPlayer(id int, l game.Lobby, conn *websocket.Conn) game.Player {
+	return &Player{id: id, lobby: l, conn: conn, msg: make(chan []byte, 256)}
 }
