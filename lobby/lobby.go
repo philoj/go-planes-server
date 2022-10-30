@@ -88,6 +88,10 @@ func (l *Lobby) PlayerExists(id int) bool {
 var u = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		log.Print("origin: ", r.Header.Get("origin"))
+		return r.Header.Get("origin") == "http://localhost:8081" // FIXME better origin value
+	},
 }
 
 // LobbyHandler handles websocket requests from the peer.
